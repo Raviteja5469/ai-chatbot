@@ -1,45 +1,51 @@
+// Import necessary packages
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+// Main entry point of the app
 void main() {
   runApp(OllamaApp());
 }
 
+// Main application widget
 class OllamaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Ollama Desktop',
-      theme: ThemeData.dark(),
-      home: ChatScreen(),
+      debugShowCheckedModeBanner: false, // Disable the debug banner
+      title: 'Ollama Desktop', // Application title
+      theme: ThemeData.dark(), // Application theme
+      home: ChatScreen(), // Main screen of the application
     );
   }
 }
 
+// Stateful widget for the chat screen
 class ChatScreen extends StatefulWidget {
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
+// State of the chat screen
 class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _controller = TextEditingController();
-  String _response = "";
+  final TextEditingController _controller = TextEditingController(); // Controller for the text input
+  String _response = ""; // Variable to hold the response
 
+  // Function to send a request to the server
   Future<void> askOllama(String prompt) async {
     final url = Uri.parse("http://localhost:8000/generate");
     final client = http.Client();
     final request = http.Request('POST', url)
-      ..headers['Content-Type'] = 'application/json'
-      ..body = jsonEncode({"prompt": prompt});
+      ..headers['Content-Type'] = 'application/json' // Set the request headers
+      ..body = jsonEncode({"prompt": prompt}); // Set the request body
 
     final streamedResponse = await client.send(request);
 
     if (streamedResponse.statusCode == 200) {
       final StringBuffer responseBuffer = StringBuffer();
       streamedResponse.stream.transform(utf8.decoder).listen((chunk) {
-        responseBuffer.write(chunk);
+        responseBuffer.write(chunk); // Append each chunk to the buffer
       }, onDone: () {
         final responseString = responseBuffer.toString();
         print('Response String: $responseString');
@@ -56,11 +62,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     responseText.contains('ðŸ˜Š')) {
                   return null; // Ignore responses with HTML tags or ðŸ˜Š character
                 }
-                return responseText
-                    .trim(); // Remove leading and trailing whitespace
+                return responseText.trim(); // Remove leading and trailing whitespace
               } catch (e) {
                 print('Error parsing JSON: $e');
-                return null;
+                return null; // Return null if there's an error
               }
             })
             .where((response) => response != null && response.isNotEmpty)
@@ -70,14 +75,14 @@ class _ChatScreenState extends State<ChatScreen> {
         print('Response Text: $responseText');
 
         setState(() {
-          _response = responseText;
+          _response = responseText; // Update the response state
           print('_response: $_response');
         });
       });
     } else {
       setState(() {
         _response =
-            "Error: ${streamedResponse.statusCode} ${streamedResponse.reasonPhrase}";
+            "Error: ${streamedResponse.statusCode} ${streamedResponse.reasonPhrase}"; // Update the response state with the error
       });
     }
   }
@@ -85,29 +90,29 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Ollama Chatbot")),
+      appBar: AppBar(title: Text("Ollama Chatbot")), // AppBar with title
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
-              controller: _controller,
+              controller: _controller, // Text input controller
               decoration: InputDecoration(
-                labelText: "Ask something...",
-                border: OutlineInputBorder(),
+                labelText: "Ask something...", // Input label
+                border: OutlineInputBorder(), // Input border
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 10), // Spacing
             ElevatedButton(
-              onPressed: () => askOllama(_controller.text),
-              child: Text("Send"),
+              onPressed: () => askOllama(_controller.text), // Send button action
+              child: Text("Send"), // Send button text
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 20), // Spacing
             Expanded(
               child: SingleChildScrollView(
                 child: Text(
-                  "Response: $_response",
-                  style: TextStyle(fontSize: 16, color: Colors.white),
+                  "Response: $_response", // Display the response
+                  style: TextStyle(fontSize: 16, color: Colors.white), // Response text style
                 ),
               ),
             ),
