@@ -8,7 +8,7 @@ This is a chatbot application built using Flutter for the front end and FastAPI 
 - Dark theme for the application
 - Real-time response generation
 - Cross-origin request handling with FastAPI
--JSON request and 
+-JSON request and response 
 
 ## Front End
 The front end of the application is built using Flutter. The main components include:
