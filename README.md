@@ -49,7 +49,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 - [Flutter](https://flutter.dev/) - for the front end framework.
 - [FastAPI](https://fastapi.tiangolo.com/) - for the back end framework.
 - [Pydantic](https://pydantic-docs.helpmanual.io/) - for data validation and parsing.
-- [HTTP](https://docs.python-requests.org/en/latest/) - for making HTTP requests.. 
+- [HTTP](https://docs.python-requests.org/en/latest/) - for making HTTP requests... 
 
 
 
